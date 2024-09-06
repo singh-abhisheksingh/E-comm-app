@@ -29,4 +29,18 @@ public class ProductService {
         product.setImageData(imageFile.getBytes());
         return repository.save(product);
     }
+
+    public Product updateProduct(int pid, Product product, MultipartFile imageFile) throws IOException {
+        if (repository.findById(pid).orElse(null)!=null){
+            product.setImageData(imageFile.getBytes());
+            product.setImageType(imageFile.getContentType());
+            product.setImageName(imageFile.getOriginalFilename());
+            repository.save(product);
+            return product;
+        }
+        else return null;
+    }
+
+    public void deleteProductById(int pid) {
+        repository.deleteById(pid);    }
 }

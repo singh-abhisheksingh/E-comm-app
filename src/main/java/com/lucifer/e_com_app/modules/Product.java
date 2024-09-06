@@ -27,6 +27,7 @@ public class Product {
 
     private String imageName;
     private String imageType;
+
     @Lob //Large object type of byte array to store image
     private byte[] imageData;
     // alternatively upload image on AWS and store the link here -> preferred way
