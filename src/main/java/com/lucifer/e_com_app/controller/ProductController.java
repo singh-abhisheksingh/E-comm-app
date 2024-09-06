@@ -3,10 +3,12 @@ package com.lucifer.e_com_app.controller;
 import com.lucifer.e_com_app.modules.Product;
 import com.lucifer.e_com_app.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,12 +25,41 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public List<Product> getAllProducts(){
-        return service.getAllProducts();
+    public ResponseEntity<List<Product>> getAllProducts(){
+        return new ResponseEntity<>(service.getAllProducts(), HttpStatus.OK);
     }
 
     @GetMapping("/product/{pid}")
-    public Product getProductById(@PathVariable int pid){
-        return service.getProductById(pid);
+    public ResponseEntity<Product> getProductById(@PathVariable int pid){
+        Product product = service.getProductById(pid);
+        if (product!=null)
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/product")
+    public ResponseEntity<?> addProduct(@RequestPart Product product,
+                                        @RequestPart MultipartFile imageFile){
+        // (@RequestBody Product product) -> can be used if only json is to be saved as object
+
+        try {
+            Product savedProduct = service.addProduct(product, imageFile);
+            return  new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/product/{pid}/image")
+    public ResponseEntity<?> getImageByProductId(@PathVariable int pid){
+        Product product = service.getProductById(pid);
+        if (product!=null) {
+            byte[] imageData = product.getImageData();
+            return ResponseEntity.ok()
+                    .contentType(MediaType.valueOf(product.getImageType()))
+                    .body(imageData);
+        }
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
