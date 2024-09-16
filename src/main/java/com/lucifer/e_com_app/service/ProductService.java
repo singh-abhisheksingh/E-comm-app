@@ -43,4 +43,8 @@ public class ProductService {
 
     public void deleteProductById(int pid) {
         repository.deleteById(pid);    }
+
+    public List<Product> searchProduct(String keyword) {
+        return repository.searchProduct(keyword);
+    }
 }

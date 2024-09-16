@@ -4,12 +4,12 @@ import com.lucifer.e_com_app.modules.Product;
 import com.lucifer.e_com_app.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -62,4 +62,38 @@ public class ProductController {
         }
         else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @PutMapping("/product/{pid}")
+    public ResponseEntity<String> updateProduct(@PathVariable int pid,
+                                                @RequestPart Product product,
+                                                @RequestPart MultipartFile imageFile){
+        try {
+            Product updatedProduct = service.updateProduct(pid, product, imageFile);
+            if (updatedProduct != null){
+                return ResponseEntity.ok("Product updated");
+            }
+            else {
+                throw new IOException("Product does not exist");
+            }
+        } catch (IOException e) {
+            return new ResponseEntity<>("Failed to update", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/product/{pid}")
+    public ResponseEntity<String> deleteProduct(@PathVariable int pid){
+        Product product = service.getProductById(pid);
+        if (product!=null) {
+            service.deleteProductById(pid);
+            return ResponseEntity.ok("Product deleted");
+        }
+        else return new ResponseEntity<>("Product does not exist",HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/products/search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam String keyword){
+        List<Product> products = service.searchProduct(keyword);
+        return ResponseEntity.ok(products);
+    }
+
 }
