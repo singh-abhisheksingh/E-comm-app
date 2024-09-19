@@ -1,4 +1,4 @@
-package com.lucifer.e_com_app.modules;
+package com.lucifer.e_com_app.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
