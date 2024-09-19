@@ -1,6 +1,6 @@
 package com.lucifer.e_com_app.repository;
 
-import com.lucifer.e_com_app.modules.Product;
+import com.lucifer.e_com_app.models.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

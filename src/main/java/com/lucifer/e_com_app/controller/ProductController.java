@@ -1,6 +1,6 @@
 package com.lucifer.e_com_app.controller;
 
-import com.lucifer.e_com_app.modules.Product;
+import com.lucifer.e_com_app.models.Product;
 import com.lucifer.e_com_app.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
