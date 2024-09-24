@@ -10,7 +10,7 @@ import java.util.List;
 
 public class UserPrincipal implements UserDetails {
 
-    private User user;
+    private final User user;
 
     public UserPrincipal(User user) {
         this.user = user;
@@ -18,7 +18,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return user.getEmail();
     }
 
     @Override

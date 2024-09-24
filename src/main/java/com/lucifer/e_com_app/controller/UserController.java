@@ -25,22 +25,22 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @GetMapping("hello")
+    @GetMapping("/")
     public String welcome(){
-        return "Hello Abhishek";
+        return "Welcome to BuyAbhi";
     }
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public User registerUser(@RequestBody User user){
         return userService.saveUser(user);
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public String login(@RequestBody User user){
         Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         if(authentication.isAuthenticated())
-            return jwtService.generateToken(user.getUsername());
+            return jwtService.generateToken(user.getEmail());
         else
             return "Login Failed";
     }
