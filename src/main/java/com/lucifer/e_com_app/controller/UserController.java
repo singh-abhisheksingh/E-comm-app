@@ -1,5 +1,6 @@
 package com.lucifer.e_com_app.controller;
 
+import com.lucifer.e_com_app.dto.LoginRequest;
 import com.lucifer.e_com_app.models.User;
 import com.lucifer.e_com_app.service.JwtService;
 import com.lucifer.e_com_app.service.UserService;
@@ -21,9 +22,6 @@ public class UserController {
     @Autowired
     private JwtService jwtService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
     @GetMapping("/")
     public String welcome(){
         return "Welcome to BuyAbhi";
@@ -35,18 +33,21 @@ public class UserController {
         if (existingUser != null)
             return ResponseEntity.badRequest().body("Email already exists!");
 
-        User registeredUser = userService.saveUser(user);
+        User registeredUser = userService.registerUser(user);
         return ResponseEntity.ok("User registered successfully!");
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user){
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-        if(authentication.isAuthenticated())
-            return jwtService.generateToken(user.getEmail());
-        else
-            return "Login Failed";
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
+        boolean isAuthenticated = userService.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword());
+
+        if (isAuthenticated) {
+            String token = jwtService.generateToken(loginRequest.getEmail());
+            return ResponseEntity.ok().body(token);
+        }
+        else {
+            return ResponseEntity.badRequest().body("Invalid email or password!");
+        }
     }
 
 }

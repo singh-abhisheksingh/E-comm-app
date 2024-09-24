@@ -19,9 +19,17 @@ public class UserService {
         return userRepo.findByEmail(email);
     }
 
-    public User saveUser(User user){
+    public User registerUser(User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
+    }
+
+    public boolean authenticateUser(String email, String password) {
+        User user = userRepo.findByEmail(email);
+        if (user != null) {
+            return passwordEncoder.matches(password, user.getPassword());
+        }
+        return false;
     }
 
 }
