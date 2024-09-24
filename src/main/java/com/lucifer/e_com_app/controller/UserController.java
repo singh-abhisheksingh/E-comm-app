@@ -5,6 +5,7 @@ import com.lucifer.e_com_app.service.JwtService;
 import com.lucifer.e_com_app.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,8 +30,13 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody User user){
-        return userService.saveUser(user);
+    public ResponseEntity<?> registerUser(@RequestBody User user){
+        User existingUser = userService.findByEmail(user.getEmail());
+        if (existingUser != null)
+            return ResponseEntity.badRequest().body("Email already exists!");
+
+        User registeredUser = userService.saveUser(user);
+        return ResponseEntity.ok("User registered successfully!");
     }
 
     @PostMapping("/login")
