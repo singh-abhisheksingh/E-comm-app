@@ -12,10 +12,15 @@ public class UserService {
     @Autowired
     private UserRepository userRepo;
 
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(14);
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    public User findByEmail(String email) {
+        return userRepo.findByEmail(email);
+    }
 
     public User saveUser(User user){
-        user.setPassword(encoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
     }
 
